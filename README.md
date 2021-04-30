@@ -11,6 +11,7 @@ PART 7: Statistical analysis.
 
 
 ![workflow_final](https://user-images.githubusercontent.com/45290619/116694901-2422af80-a9c0-11eb-9323-4959beed51bd.jpg)
+
 Figure: An overview of experimental and bioinformatics methods used to obtain genome catalogues from two tested subjects.
 
 Please feel free to contact me via GitHub in case of any questions!
