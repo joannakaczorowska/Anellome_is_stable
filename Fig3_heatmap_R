@@ -1,0 +1,128 @@
+### load packages and data
+library("tidyverse")
+library("dplyr")
+library("plyr")
+library("viridis")
+library("svglite")
+library("tidyr")
+library("seriation")
+library("reshape2")
+
+##SUBJECT 3 (= Subject 1 in the paper)
+###Heatmap with months of follow up
+  Heatmap_ranges_months_S3 <- read_csv("Heatmap_S3.csv")
+  Heatmap_ranges_months_S3 <- melt(Heatmap_ranges_months_S3)
+
+  Heatmap_ranges_months_S3$value <- cut(Heatmap_ranges_months_S3$value, breaks = c(0, 0.001, 0.1, 0.3, 0.5, 0.07, 0.9, 1.1), right = FALSE)
+  Heatmap_ranges_months_S3_mut <- Heatmap_ranges_months_S3 %>% mutate(Genome = fct_relevel(Genome, "TTV-AMS-S1-06", "TTV-AMS-S1-07", "TTV-AMS-S1-31", "TTV-AMS-S1-02", "TTV-AMS-S1-23", "TTV-AMS-S1-04", "TTV-AMS-S1-05", "TTV-AMS-S1-03", "TTV-AMS-S1-25", "TTV-AMS-S1-26", "TTV-AMS-S1-32", "TTV-AMS-S1-14", "TTV-AMS-S1-09", "TTV-AMS-S1-10", "TTV-AMS-S1-11", "TTV-AMS-S1-24", "TTV-AMS-S1-01", "TTV-AMS-S1-13", "TTV-AMS-S1-15", "TTV-AMS-S1-30", "TTV-AMS-S1-21", "TTV-AMS-S1-22", "TTV-AMS-S1-29", "TTV-AMS-S1-17", "TTV-AMS-S1-18", "TTV-AMS-S1-12", "TTV-AMS-S1-27", "TTV-AMS-S1-16", "TTV-AMS-S1-08", "TTV-AMS-S1-19", "TTV-AMS-S1-20", "TTMDV-AMS-S1-35", "TTMDV-AMS-S1-34", "TTMDV-AMS-S1-38", "TTMDV-AMS-S1-37", "TTMDV-AMS-S1-40", "TTMDV-AMS-S1-36", "TTMDV-AMS-S1-39", "TTMV-AMS-S1-41", "TTMV-AMS-S1-54", "TTMV-AMS-S1-55", "TTMV-AMS-S1-42", "TTMV-AMS-S1-44", "TTMV-AMS-S1-49", "TTMV-AMS-S1-43", "TTMV-AMS-S1-45", "TTMV-AMS-S1-46", "TTMV-AMS-S1-52", "TTMV-AMS-S1-48", "TTMV-AMS-S1-47", "TTMV-AMS-S1-51", "TTMV-AMS-S1-50", "TTMV-AMS-S1-53"))
+  view(Heatmap_ranges_months_S3)
+  
+  Heatmap_ranges_months_S3_mut %>%
+    arrange(value) %>% 
+    ggplot(mapping = aes(x = variable, y = Genome)) +
+    geom_tile(mapping = aes(fill = value, y = reorder(Genome, desc(Genome))), colour = "grey") +
+    scale_fill_brewer(palette = "Oranges") +
+    scale_x_discrete(guide = guide_axis(angle = 90, check.overlap = TRUE)) +
+    labs(x = "Months of follow up", y = "") +
+    theme(axis.text.y = element_text(hjust = 0, size = 8)) +
+    coord_equal() +
+    ggsave("heatmap_months_S3_sep2021.tiff")
+
+### SUBJECT4 (= Subject 2 in the paper)
+  Heatmap_update_months_S4 <- read_csv("Heatmap_S4.csv")
+  View(Heatmap_update_months_S4)
+  Heatmap_update_months_S4 <- melt(Heatmap_update_months_S4)  
+
+  Heatmap_update_months_S4$value <- cut(Heatmap_update_months_S4$value, breaks = c(0, 0.001, 0.1, 0.3, 0.5, 0.07, 0.9, 1.1), right = FALSE)
+  Heatmap_ranges_months_S4_mut <- Heatmap_update_months_S4 %>% mutate(Genome = fct_relevel(Genome, "TTV-AMS-S2-02", "TTV-AMS-S2-06",  "TTV-AMS-S2-03", "TTV-AMS-S2-01", "TTV-AMS-S2-05", "TTV-AMS-S2-04", "TTV-AMS-S2-07", "TTMV-AMS-S2-10", "TTMV-AMS-S2-11", "TTMV-AMS-S2-08", "TTMV-AMS-S2-09"))  
+  Heatmap_ranges_months_S4_mut %>%
+    arrange(value) %>% 
+    ggplot(mapping = aes(x = variable, y = Genome)) +
+    geom_tile(mapping = aes(fill = value,  y = reorder(Genome, desc(Genome))), colour = "grey") +
+    scale_fill_brewer(palette = "Blues") +
+    scale_x_discrete(guide = guide_axis(angle = 90, check.overlap = TRUE)) +
+    labs(x = "Months of follow up", y="") +
+    theme(axis.text.y = element_text(hjust = 0, size = 8)) +
+    coord_equal() +
+    ggsave("heatmap_months_S4_Sep2021.tiff")
+  
+###Subject 3 and 4 -- the heatmap that was used in the paper
+  Heatmap_S3_S4 <- read_csv("Heatmap_S3_S4_no2.csv")
+  Heatmap_S3_S4 <- melt(Heatmap_S3_S4)
+  Heatmap_S3_S4$value <- cut(Heatmap_S3_S4$value, breaks = c(0, 0.001, 0.1, 0.3, 0.5, 0.07, 0.9, 1.1), right = FALSE)
+  Heatmap_S3_S4_mut <- Heatmap_S3_S4 %>% mutate(Virus = fct_relevel(Virus, "TTV-AMS-S1-01",
+                                                                    "TTV-AMS-S1-25",
+                                                                    "TTV-AMS-S1-23",
+                                                                    "TTMV-AMS-S1-41",
+                                                                    "TTV-AMS-S1-07",
+                                                                    "TTV-AMS-S1-06",
+                                                                    "TTV-AMS-S1-03",
+                                                                    "TTV-AMS-S1-11",
+                                                                    "TTMV-AMS-S1-42",
+                                                                    "TTV-AMS-S1-10",
+                                                                    "TTV-AMS-S1-26",
+                                                                    "TTV-AMS-S1-02",
+                                                                    "TTV-AMS-S1-08",
+                                                                    "TTV-AMS-S1-13",
+                                                                    "TTV-AMS-S1-04",
+                                                                    "TTV-AMS-S1-24",
+                                                                    "TTV-AMS-S1-27",
+                                                                    "TTV-AMS-S1-12",
+                                                                    "TTV-AMS-S1-09",
+                                                                    "TTV-AMS-S1-17",
+                                                                    "TTV-AMS-S1-19",
+                                                                    "TTV-AMS-S1-20",
+                                                                    "TTMV-AMS-S1-44",
+                                                                    "TTV-AMS-S1-14",
+                                                                    "TTMDV-AMS-S1-34",
+                                                                    "TTV-AMS-S1-18",
+                                                                    "TTMV-AMS-S1-47",
+                                                                    "TTV-AMS-S1-15",
+                                                                    "TTV-AMS-S1-16",
+                                                                    "TTV-AMS-S1-21",
+                                                                    "TTMV-AMS-S1-45",
+                                                                    "TTV-AMS-S1-05",
+                                                                    "TTMV-AMS-S1-43",
+                                                                    "TTMV-AMS-S1-46",
+                                                                    "TTV-AMS-S1-22",
+                                                                    "TTMDV-AMS-S1-35",
+                                                                    "TTMDV-AMS-S1-36",
+                                                                    "TTMDV-AMS-S1-37",
+                                                                    "TTMDV-AMS-S1-38",
+                                                                    "TTMDV-AMS-S1-39",
+                                                                    "TTMDV-AMS-S1-40",
+                                                                    "TTMV-AMS-S1-48",
+                                                                    "TTMV-AMS-S1-49",
+                                                                    "TTMV-AMS-S1-50",
+                                                                    "TTMV-AMS-S1-51",
+                                                                    "TTMV-AMS-S1-52",
+                                                                    "TTMV-AMS-S1-53",
+                                                                    "TTMV-AMS-S1-54",
+                                                                    "TTMV-AMS-S1-55",
+                                                                    "TTV-AMS-S1-29",
+                                                                    "TTV-AMS-S1-30",
+                                                                    "TTV-AMS-S1-31",
+                                                                    "TTV-AMS-S1-32",
+                                                                    "TTV-AMS-S2-01",
+                                                                    "TTV-AMS-S2-03",
+                                                                    "TTV-AMS-S2-05",
+                                                                    "TTV-AMS-S2-04",
+                                                                    "TTV-AMS-S2-02",
+                                                                    "TTMV-AMS-S2-08",
+                                                                    "TTMV-AMS-S2-10",
+                                                                    "TTMV-AMS-S2-11",
+                                                                    "TTMV-AMS-S2-09",
+                                                                    "TTV-AMS-S2-06",
+                                                                    "TTV-AMS-S2-07"))
+  Heatmap_S3_S4_mut %>%
+    ggplot(mapping = aes(x = variable, y = Virus)) +
+    geom_tile(mapping = aes(fill = value,  y = reorder(Virus, desc(Virus))), colour = "grey") +
+    scale_fill_brewer(palette = "Greens") +
+    scale_x_discrete(guide = guide_axis(angle = 90, check.overlap = TRUE)) +
+    labs(x = "Sample", y="") +
+    theme(axis.text.y = element_text(hjust = 0, size = 5), axis.text.x = element_text(size = 5)) +
+    coord_equal()
+    ggsave("heatmap_S3_S4_arranged.svg")
+  
+  
+  
