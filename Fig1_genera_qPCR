@@ -1,0 +1,215 @@
+###qPCR analysis - HIV(-) Subjects
+
+### Require packages that may be useful
+require(epitools)
+require(survival)
+require(ggplot2)
+require(tidyverse)
+require(vegan)
+require(scales)
+require(dplyr)
+require(ggpubr)
+
+Subject3 <- read.csv("Subject3_sn.csv")
+###Subject 3 (in the paper called Subject 1)
+
+###ggplot - TTV
+ggplot(data = Subject3, mapping = aes(x = Year, y = TTV)) + 
+  geom_point(col=c("darkorange1"), size=4) + 
+  geom_line(col=c("darkorange1"), linetype = "solid", lwd=1.5) + 
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.minor = element_line(colour = "grey50", linetype = "dashed")) +
+  labs(x = "Year of follow up", y = "TTV DNA copies per mL serum") +
+  scale_x_continuous(limits = c(0,35), breaks = c(0,5, 10, 15, 20, 25, 30, 35)) +
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  geom_hline(yintercept=97, linetype='dashed', lwd=1)+
+  guides(color = "none", size="none", shape = "none")
+  ggsave("TTV_S1_year.svg", width = 10, height = 5)
+
+ggplot(Subject3, aes(y = TTV, x = Year)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    theme_minimal() +
+    labs(y = "TTV copies per mL", x = "Years")+
+    scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                  labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+    theme(axis.text.y = element_text(hjust = 0, size = 15), axis.text.x = element_text(size = 15), axis.title.y = element_text(size = 20), axis.title.x = element_text(size = 20))
+
+cor.test(Subject3$TTV, Subject3$Year, method = "spearman")
+    
+##ggplot - TTMV
+ggplot(data = Subject3, mapping = aes(x = Year, y = TTMV)) + 
+  geom_point(col=c("darkorange2"), size=4, aes(shape = TTMV_neg)) +
+  scale_shape_manual(values=c(1, 16)) +
+  geom_line(col=c("darkorange2"), linetype = "solid", lwd=1.5) + 
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.minor = element_line(colour = "grey50", linetype = "dashed")) +
+  labs(x = "Year of follow up", y = "TTMV DNA copies per mL serum") +
+  scale_x_continuous(limits = c(0,35), breaks = c(0,5, 10, 15, 20, 25, 30, 35)) +
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  geom_hline(yintercept=20, linetype='dashed', lwd=1)+
+  guides(color = "none", size="none", shape = "none")
+  ggsave("TTMV_S1_year.svg", width = 10, height = 5)
+  
+ggplot(Subject3, aes(y = TTMV, x = Year)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    theme_minimal() +
+    labs(y = "TTMV copies per mL", x = "Years")+
+    scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                  labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+    theme(axis.text.y = element_text(hjust = 0, size = 15), axis.text.x = element_text(size = 15), axis.title.y = element_text(size = 20), axis.title.x = element_text(size = 20))
+  
+  cor.test(Subject3$TTMV, Subject3$Year, method = "spearman")
+
+##ggplot - TTMDV
+ggplot(data = Subject3, mapping = aes(x = Year, y = TTMDV)) + 
+  geom_point(col=c("darkorange3"), size=4, aes(shape = TTMDV_neg)) + 
+  scale_shape_manual(values=c(1, 16)) +
+  geom_line(col=c("darkorange3"), linetype = "solid", lwd=1.5) + 
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.minor = element_line(colour = "grey50", linetype = "dashed")) +
+  labs(x = "Year of follow up", y = "TTMDV DNA copies per mL serum") +
+  scale_x_continuous(limits = c(0,35), breaks = c(0,5, 10, 15, 20, 25, 30, 35)) +
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  geom_hline(yintercept=8, linetype='dashed', lwd=1)+
+  guides(color = "none", size="none", shape = "none")
+  ggsave("TTMDV_S1_year.svg", width = 10, height = 5)
+
+  ggplot(Subject3, aes(y = TTMDV, x = Year)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    theme_minimal() +
+    labs(y = "TTMDV copies per mL", x = "Years")+
+    scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                  labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+    theme(axis.text.y = element_text(hjust = 0, size = 15), axis.text.x = element_text(size = 15), axis.title.y = element_text(size = 20), axis.title.x = element_text(size = 20))
+  
+  cor.test(Subject3$TTMDV, Subject3$Year, method = "spearman")
+
+##Subject4 (in the paper called Subject2)
+Subject4 <- read.csv("Subject4_sn.csv")
+###ggplot - TTV
+ggplot(data = Subject4, mapping = aes(x = Year, y = TTV)) + 
+  geom_point(col=c("dodgerblue1"), size=4, aes(shape = TTV_neg)) +
+  scale_shape_manual(values=c(1, 16)) +
+  geom_line(col=c("dodgerblue1"), linetype = "solid", lwd=1.5) + 
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.minor = element_line(colour = "grey50", linetype = "dashed")) +
+  labs(x = "Year of follow up", y = "TTV DNA copies per mL serum") +
+  scale_x_continuous(limits = c(0,35), breaks = c(0,5, 10, 15, 20, 25, 30, 35))+
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  geom_hline(yintercept=97, linetype='dashed', lwd=1)+
+  guides(color = "none", size="none", shape = "none")
+  ggsave("TTV_S2_year.svg", width = 10, height = 5)
+  
+ggplot(Subject4, aes(y = TTV, x = Year)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    theme_minimal() +
+    labs(y = "TTV copies per mL", x = "Years")+
+    scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                  labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+    theme(axis.text.y = element_text(hjust = 0, size = 15), axis.text.x = element_text(size = 15), axis.title.y = element_text(size = 20), axis.title.x = element_text(size = 20))
+  
+cor.test(Subject4$TTV, Subject4$Year, method = "spearman")
+
+##ggplot - TTMV
+ggplot(data = Subject4, mapping = aes(x = Year, y = TTMV)) + 
+  geom_point(col=c("dodgerblue3"), size=4, aes(shape = TTMV_neg)) + 
+  scale_shape_manual(values=c(1, 16)) +
+  geom_line(col=c("dodgerblue3"), linetype = "solid", lwd=1.5) + 
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.minor = element_line(colour = "grey50", linetype = "dashed")) +
+  labs(x = "Year of follow up", y = "TTMV DNA copies per mL serum") +
+  scale_x_continuous(limits = c(0,35), breaks = c(0,5, 10, 15, 20, 25, 30, 35)) +
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  geom_hline(yintercept=20, linetype='dashed', lwd=1) +
+  guides(color = "none", size="none", shape = "none")
+  ggsave("TTMV_S2_year.svg", width = 10, height = 5)
+  
+  ggplot(Subject4, aes(y = TTMV, x = Year)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    theme_minimal() +
+    labs(y = "TTMV copies per mL", x = "Years")+
+    scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                  labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+    theme(axis.text.y = element_text(hjust = 0, size = 15), axis.text.x = element_text(size = 15), axis.title.y = element_text(size = 20), axis.title.x = element_text(size = 20))
+  
+  cor.test(Subject4$TTMV, Subject4$Year, method = "spearman")
+
+##ggplot - TTMDV
+ggplot(data = Subject4, mapping = aes(x = Year, y = TTMDV)) + 
+  geom_point(col=c("dodgerblue4"), size=4, aes(shape = TTMDV_neg)) + 
+  scale_shape_manual(values=c(1, 16)) +
+  geom_line(col=c("dodgerblue4"), linetype = "solid", lwd=1.5) + 
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.minor = element_line(colour = "grey50", linetype = "dashed")) +
+  labs(x = "Year of follow up", y = "TTMDV DNA copies per mL serum") +
+  scale_x_continuous(limits = c(0,35), breaks = c(0,5, 10, 15, 20, 25, 30, 35))+
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  geom_hline(yintercept=8, linetype='dashed', lwd=1)+
+  guides(color = "none", size="none", shape = "none")
+  ggsave("TTMDV_S2_year.svg", width = 10, height = 5)
+  
+  ggplot(Subject4, aes(y = TTMDV, x = Year)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    theme_minimal() +
+    labs(y = "TTMDV copies per mL", x = "Years")+
+    scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                  labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+    theme(axis.text.y = element_text(hjust = 0, size = 15), axis.text.x = element_text(size = 15), axis.title.y = element_text(size = 20), axis.title.x = element_text(size = 20))
+  
+  cor.test(Subject4$TTMDV, Subject4$Year, method = "spearman")
+
+## BOXPLOT - both subjects
+boxplot_qpcr <- read.csv("Boxplot_qPCRn.csv")
+
+box_compare <- list(c("Subject1"), c("Subject2"))
+ggplot(data = boxplot_qpcr, aes(x = Subject, y = Copies, fill = Genus)) +
+  geom_boxplot() +
+  labs(x = "", y = "AV DNA copies per mL serum") +
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                               labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  stat_compare_means()+
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed"))
+ggsave("AV_boxplot.svg")
+
+### boxplot only TTV
+box_TTV <- read.csv("boxplot_TTV.csv")
+ggplot(data = box_TTV, aes(x = Subject, y = Copies, fill = Subject)) +
+  geom_boxplot() +
+  geom_jitter(shape=16, position=position_jitter(0.1)) +
+  labs(x = "", y = "TTV DNA copies per mL serum") +
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  stat_compare_means()+
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed"))
+ggsave("TTV_boxplot.svg")
+
+
+### boxplot only TTMV
+box_TTMV <- read.csv("boxplot_TTMV.csv")
+ggplot(data = box_TTMV, aes(x = Subject, y = Copies, fill = Subject)) +
+  geom_boxplot() +
+  geom_jitter(shape=16, position=position_jitter(0.1)) +
+  labs(x = "", y = "TTMV DNA copies per mL serum") +
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  stat_compare_means()+
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed"))
+ggsave("TTMV_boxplot.svg")
+
+### boxplot only TTMDV
+box_TTMDV <- read.csv("boxplot_TTMDV.csv")
+ggplot(data = box_TTMDV, aes(x = Subject, y = Copies, fill = Subject)) +
+  geom_boxplot() +
+  geom_jitter(shape=16, position=position_jitter(0.1)) +
+  labs(x = "", y = "TTMDV DNA copies per mL serum") +
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  stat_compare_means()+
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed"))
+ggsave("TTMDV_boxplot.svg")
