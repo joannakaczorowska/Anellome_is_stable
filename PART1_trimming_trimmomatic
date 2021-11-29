@@ -1,0 +1,16 @@
+#!/bin/bash
+
+### 4. Run Trimmomatic
+### We use Trimmomatic to get rid of the adapter sequences and sequences that have a very bad quality.
+### www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf
+
+for fastqfileR1 in ~/Documents/Input/*R1_001.fastq.gz; do
+	name1="${fastqfileR1}"
+java -jar ~/Documents/Trimmomatic-0.39/trimmomatic-0.39.jar PE -basein "${fastqfileR1}" -baseout "${fastqfileR1}" ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+done
+
+mkdir ~/Documents/Input/Pairedreads
+cp ~/Documents/Input/*R1_001_?P.fastq.gz ~/Documents/Input/Pairedreads/
+
+### The paired file from run 1 will be called 1P, while the paired file from the run 2 will be called 2P.
+### The created files will be located in a new folder of Input.
