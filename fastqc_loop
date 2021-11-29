@@ -1,0 +1,11 @@
+#!/bin/bash
+
+### 3. Run FastQC and make an output in html
+### Manual available here https://dnacore.missouri.edu/PDF/FastQC_Manual.pdf
+### You can later on see whether your run files were good quality (in case something went wrong at the later stage)
+
+cd Output/
+mkdir OutputQC/
+echo "Directory for fastqc created"
+~/Documents/FastQC/fastqc ~/Documents/FastQC/InputFastqc/*.fastq.gz --outdir=../Output/OutputQC
+echo "FastQC done!"
