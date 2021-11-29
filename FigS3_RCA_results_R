@@ -6,7 +6,6 @@ require(vegan)
 require(plyr)
 require(dplyr)
 require(scales)
-setwd("C:/Users/jkacz/Documents/PhD/Anellome_paper/qPCR_analysis/New")
 
 RCA_S1 <- read.csv("RCA_S1.csv")
 RCA_S2 <- read.csv("RCA_S2.csv")
