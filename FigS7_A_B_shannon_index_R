@@ -1,0 +1,101 @@
+###Script for Shannon index calculation
+library("vegan")
+library("tidyverse")
+library("dplyr")
+library("reshape2")
+library(ggpubr)
+library("svglite")
+
+#Subject1
+Shannon_S1 <- read_csv("Shannon_S1.csv")
+Shannon_S1[is.na(Shannon_S1)] <- 0
+view(Shannon_S1)
+Shannon_div_S1 <- diversity(Shannon_S1, index = "shannon", base = exp(1))
+view(Shannon_div_S1)
+
+#Subject2
+Shannon_S2 <- read_csv("Shannon_S2.csv")
+Shannon_S2[is.na(Shannon_S2)] <- 0
+view(Shannon_S2)
+Shannon_div_S2 <- diversity(Shannon_S2, index = "shannon", base = exp(1))
+view(Shannon_div_S2)
+
+###shannoning <- cbind(Shannon_div_S1, Shannon_div_S2)
+###write.csv(shannoning, "shannon_S1S2.csv")
+
+boxplotshannon <- read.csv("shannon_S1S2.csv")
+boxplotshannon <- melt(boxplotshannon)
+view(boxplotshannon)
+
+### Mann-Whitney U Test of these results
+wilsh_S1S2 <- read.csv("shannon_S1S2.csv")
+view(wilsh_S1S2)
+wilcox.test(Shannon_div_S1, Shannon_div_S2, data = wilsh_S1S2)
+
+### Pairwise comparison
+compare_means(Subject_1 ~ Subject_2, data = wilsh_S1S2, method = "wilcox.test")
+
+### Plot of both S1 and S2 Shannon - boxplot
+ggplot(boxplotshannon, aes(x = variable, y = value)) +
+  geom_boxplot(aes(fill = variable)) +
+  theme(aspect.ratio = 4/3) +
+  labs(x = "", y = "Alpha diversity (Shannon)") +
+  stat_compare_means() 
+  ggsave("boxplotshannon.svg")
+
+### Shannon index per time
+S1_intime <- read.csv("S1_shannon_intime.csv")
+ggplot(S1_intime, aes(x= TP, y = Shannon)) +
+  geom_col() +
+  ggsave("S1intime.svg")
+
+S2_intime <- read.csv("S2_shannon_intime.csv")
+ggplot(S2_intime, aes(x= TP, y = Shannon)) +
+  geom_col() +
+  coord_cartesian(ylim = c(0, 3)) +
+  ggsave("S2intime.svg")
+
+### NORMALIZED
+
+boxplotshannon_norm <- read.csv("shannon_S1S2_norm2.csv")
+boxplotshannon_norm <- melt(boxplotshannon_norm)
+view(boxplotshannon_norm)
+
+### Mann-Whitney U Test of these results
+wilsh_S1S2_norm <- read.csv("shannon_S1S2_norm2.csv")
+wilcox.test(Shannon_div_S1, Shannon_div_S2, data = wilsh_S1S2_norm)
+
+### Pairwise comparison
+compare_means(Subject_1 ~ Subject_2, data = wilsh_S1S2_norm, method = "wilcox.test")
+
+### Plot of both S1 and S2 Shannon - boxplot
+ggplot(boxplotshannon_norm, aes(x = variable, y = value)) +
+  geom_boxplot(aes(fill = variable)) +
+  theme(aspect.ratio = 4/3) +
+  labs(x = "", y = "Normalized Shannon index") +
+  stat_compare_means() + 
+  theme(panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed")) +
+  ggsave("boxplotshannon_norm.svg")
+
+### Shannon index per time
+S1_intime_norm <- read.csv("S1_shannon_intime_norm.csv")
+ggplot(S1_intime_norm, aes(x= TP, y = Shannon)) +
+  geom_col() +
+  ggsave("S1intime_norm.tiff")
+
+S1_species <- read.csv("no_species_S1.csv")
+ggplot(S1_species, aes(x = TP, y = no_species))+
+  geom_col() +
+  ggsave("S1_species.tiff")
+
+S2_intime_norm <- read.csv("S2_shannon_intime_norm.csv")
+ggplot(S2_intime_norm, aes(x= TP, y = Shannon)) +
+  geom_col() +
+  coord_cartesian(ylim = c(0, 1)) +
+  ggsave("S2intime_norm.tiff")  
+
+S2_species <- read.csv("no_species_S2.csv")
+ggplot(S2_species, aes(x = TP, y = no_species))+
+  geom_col() +
+  ggsave("S2_species.tiff")
+
