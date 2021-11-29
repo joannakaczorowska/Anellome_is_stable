@@ -17,8 +17,8 @@ PART 7: Statistical analysis.
 
 PART 8: Additional scripts that may be helpful.
 
+![workflow_final](https://user-images.githubusercontent.com/45290619/143827905-a322c49d-2238-4c4b-9ad3-4032e5caba50.png)
 
-![workflow_final](https://user-images.githubusercontent.com/45290619/116694901-2422af80-a9c0-11eb-9323-4959beed51bd.jpg)
 
 Figure: An overview of experimental and bioinformatics methods used to obtain genome catalogues from two tested subjects.
 
