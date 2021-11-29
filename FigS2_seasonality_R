@@ -1,0 +1,282 @@
+library("vegan")
+library("tidyverse")
+library("dplyr")
+library("reshape2")
+library(ggpubr)
+library("svglite")
+library("survival")
+require(scales)
+require(epitools)
+library(ggsignif)
+library(broom)
+library(rstatix)
+
+### Seasonality of anellomes
+season_S3_S4 <- read_csv("S3_S4_season.csv")
+View(season_S3_S4)
+season_S3_S4$AV <- rowSums(season_S3_S4[ , c(7,9)]) ### sum of all AVs, added as an extra column
+
+### TTV seasonality
+
+ggplot(data = season_S3_S4, aes(x = Season, y = TTV, fill = Subject)) +
+  geom_boxplot() +
+  labs(x = "", y = "TTV DNA copies per mL serum") +
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed"))
+
+### S3 TTV
+season_S3 <- read_csv("S3_season.csv")
+season_S3$AV <- rowSums(season_S3[ , c(7,9)]) ### sum of all AVs, added as an extra column
+
+season_S3_group <- season_S3 %>%
+  wilcox_test(TTV ~ Season) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+season_S3_group
+
+# Create a boxplot
+TTV_season_S3_box <- ggplot(data = season_S3, aes(x = Season, y = TTV)) +
+  geom_boxplot() +
+  geom_jitter(shape=16, position=position_jitter(0.1)) +
+  labs(x = "", y = "TTV DNA copies per mL serum") +
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed"))
+TTV_season_S3_box
+
+# Add p-values onto the box plots
+season_S3_group <- season_S3_group %>%
+  add_xy_position(x = "Season", dodge = 0.8)
+TTV_season_S3_box + stat_pvalue_manual(
+  season_S3_group,  label = "p.adj.signif", tip.length = 0
+)
+ggsave("TTV_season_S3.svg")
+TTV_season_S3_box
+
+# Add 10% spaces between the p-value labels and the plot border
+TTV_season_S3_box + stat_pvalue_manual(
+  season_S3_group,  label = "p", tip.length = 0
+) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+
+### S4 TTV
+
+season_S4 <- read_csv("S4_season.csv")
+season_S4$AV <- rowSums(season_S4[ , c(7,9)]) ### sum of all AVs, added as an extra column
+
+season_S4_group <- season_S4 %>%
+  wilcox_test(TTV ~ Season) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+season_S4_group
+
+# Create a boxplot
+TTV_season_S4_box <- ggplot(data = season_S4, aes(x = Season, y = TTV)) +
+  geom_boxplot() +
+  geom_jitter(shape=16, position=position_jitter(0.1)) +
+  labs(x = "", y = "TTV DNA copies per mL serum") +
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed"))
+TTV_season_S4_box
+
+# Add p-values onto the box plots
+season_S4_group <- season_S4_group %>%
+  add_xy_position(x = "Season", dodge = 0.2)
+TTV_season_S4_box + stat_pvalue_manual(
+  season_S4_group,  label = "p.adj.signif", tip.length = 0
+)
+ggsave("TTV_season_S4.svg")
+TTV_season_S4_box
+
+# Add 10% spaces between the p-value labels and the plot border
+TTV_season_S4_box + stat_pvalue_manual(
+  season_S4_group,  label = "p.adj.signif", tip.length = 0
+)
+
+### AV
+### S3 AV
+
+season_S3_group <- season_S3 %>%
+  wilcox_test(AV ~ Season) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+season_S3_group
+
+# Create a boxplot
+AV_season_S3_box <- ggplot(data = season_S3, aes(x = Season, y = AV)) +
+  geom_boxplot() +
+  geom_jitter(shape=16, position=position_jitter(0.1)) +
+  labs(x = "", y = "AV DNA copies per mL serum") +
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed"))
+AV_season_S3_box
+
+# Add p-values onto the box plots
+season_S3_group <- season_S3_group %>%
+  add_xy_position(x = "Season", dodge = 0.8)
+AV_season_S3_box + stat_pvalue_manual(
+  season_S3_group,  label = "p.adj.signif", tip.length = 0
+)
+ggsave("AV_S3_season.svg")
+AV_season_S3_box
+
+# Add 10% spaces between the p-value labels and the plot border
+AV_season_S3_box + stat_pvalue_manual(
+  season_S3_group,  label = "p", tip.length = 0
+) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+
+### S4 AV
+
+season_S4_group <- season_S4 %>%
+  wilcox_test(AV ~ Season) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+season_S4_group
+
+# Create a boxplot
+AV_season_S4_box <- ggplot(data = season_S4, aes(x = Season, y = AV)) +
+  geom_boxplot() +
+  geom_jitter(shape=16, position=position_jitter(0.1)) +
+  labs(x = "", y = "AV DNA copies per mL serum") +
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed"))
+AV_season_S4_box
+
+# Add p-values onto the box plots
+season_S4_group <- season_S4_group %>%
+  add_xy_position(x = "Season", dodge = 0.2)
+AV_season_S4_box + stat_pvalue_manual(
+  season_S4_group,  label = "p.adj.signif", tip.length = 0
+)
+ggsave("AV_S4_season.svg")
+
+AV_season_S4_box
+
+# Add 10% spaces between the p-value labels and the plot border
+AV_season_S4_box + stat_pvalue_manual(
+  season_S4_group,  label = "p.adj.signif", tip.length = 0
+)
+
+
+### AV total
+## S3 AV
+
+season_S3_group <- season_S3 %>%
+  wilcox_test(AV ~ Season) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+season_S3_group
+
+# Create a boxplot
+AV_season_S3_box <- ggplot(data = season_S3, aes(x = Season, y = AV)) +
+  geom_boxplot() +
+  geom_jitter(shape=16, position=position_jitter(0.1)) +
+  labs(x = "", y = "AV DNA copies per mL serum") +
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed"))
+AV_season_S3_box
+
+# Add p-values onto the box plots
+season_S3_group <- season_S3_group %>%
+  add_xy_position(x = "Season", dodge = 0.8)
+AV_season_S3_box + stat_pvalue_manual(
+  season_S3_group,  label = "p.adj.signif", tip.length = 0
+)
+AV_season_S3_box
+
+# Add 10% spaces between the p-value labels and the plot border
+AV_season_S3_box + stat_pvalue_manual(
+  season_S3_group,  label = "p", tip.length = 0
+) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+
+### S4 AV
+
+season_S4_group <- season_S4 %>%
+  wilcox_test(AV ~ Season) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+season_S4_group
+
+# Create a boxplot
+AV_season_S4_box <- ggplot(data = season_S4, aes(x = Season, y = AV)) +
+  geom_boxplot() +
+  geom_jitter(shape=16, position=position_jitter(0.1)) +
+  labs(x = "", y = "AV DNA copies per mL serum") +
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed"))
+AV_season_S4_box
+
+# Add p-values onto the box plots
+season_S4_group <- season_S4_group %>%
+  add_xy_position(x = "Season", dodge = 0.2)
+AV_season_S4_box + stat_pvalue_manual(
+  season_S4_group,  label = "p.adj.signif", tip.length = 0
+)
+AV_season_S4_box
+
+# Add 10% spaces between the p-value labels and the plot border
+AV_season_S4_box + stat_pvalue_manual(
+  season_S4_group,  label = "p.adj.signif", tip.length = 0
+)
+
+
+### BY GENUS
+### S3 TTV
+season_S3_genus <- read_csv("S3_season_genus.csv")
+
+season_S3_genus_group <- season_S3_genus %>%
+  wilcox_test(Conc ~ Season) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+season_S3_genus_group
+
+# Create a boxplot
+TTV_season_S3_genus_box <- ggplot(data = season_S3_genus, aes(x = Season, y = Conc, colour = Genus)) +
+  geom_boxplot() +
+  labs(x = "", y = "AV DNA copies per mL serum") +
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed"))
+TTV_season_S3_genus_box
+
+# Add p-values onto the box plots
+season_S3_genus_group <- season_S3_genus_group %>%
+  add_xy_position(x = "Season", dodge = 0.8)
+TTV_season_S3_genus_box + stat_pvalue_manual(
+  season_S3_genus_group,  label = "p.adj.signif", tip.length = 0
+)
+TTV_season_S3_genus_box
+
+# Add 10% spaces between the p-value labels and the plot border
+TTV_season_S3_genus_box + stat_pvalue_manual(
+  season_S3_genus_group,  label = "p", tip.length = 0
+) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+
+### S4 TTV
+
+season_S4 <- read_csv("S4_season.csv")
+season_S4$AV <- rowSums(season_S4[ , c(7,9)]) ### sum of all AVs, added as an extra column
+
+season_S4_group <- season_S4 %>%
+  wilcox_test(TTV ~ Season) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+season_S4_group
+
+# Create a boxplot
+TTV_season_S4_box <- ggplot(data = season_S4, aes(x = Season, y = TTV)) +
+  geom_boxplot() +
+  geom_jitter(shape=16, position=position_jitter(0.1)) +
+  labs(x = "", y = "TTV DNA copies per mL serum") +
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed"))
+TTV_season_S4_box
+
+# Add p-values onto the box plots
+season_S4_group <- season_S4_group %>%
+  add_xy_position(x = "Season", dodge = 0.2)
+TTV_season_S4_box + stat_pvalue_manual(
+  season_S4_group,  label = "p.adj.signif", tip.length = 0
+)
+TTV_season_S4_box
+
+# Add 10% spaces between the p-value labels and the plot border
+TTV_season_S4_box + stat_pvalue_manual(
+  season_S4_group,  label = "p.adj.signif", tip.length = 0
+)
