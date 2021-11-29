@@ -1,0 +1,19 @@
+###Script for prevalence
+library("vegan")
+library("tidyverse")
+library("dplyr")
+library("reshape2")
+library(ggpubr)
+library("svglite")
+
+prevalence <- read_csv("prevalence2.csv")
+view(prevalence)
+
+prevalence %>% mutate(Species = fct_reorder(Species, Count)) %>% 
+ggplot(aes(x = Species, y = Count, fill = Subject)) +
+  geom_col() +
+  coord_flip() +
+  labs(y = "Number of mapped reads") +
+  theme(legend.text = element_text(size = 12), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 12), axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14)) + 
+  ggsave("Prevalence.svg")
+  
