@@ -1,0 +1,36 @@
+### Require packages that may be useful
+require(epitools)
+require(survival)
+require(tidyverse)
+require(vegan)
+require(plyr)
+require(dplyr)
+require(scales)
+setwd("C:/Users/jkacz/Documents/PhD/Anellome_paper/qPCR_analysis/New")
+
+RCA_S1 <- read.csv("RCA_S1.csv")
+RCA_S2 <- read.csv("RCA_S2.csv")
+
+ggplot(RCA_S1) +
+  geom_point(aes(x = Years, y = before_RCA), size = 3.5, col=c("orange2")) +
+  geom_point(aes(x = Years, y = after_RCA), size = 4, col=c("orangered3"), shape = 18) +
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 1000000000000)) +
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.minor = element_line(colour = "grey50", linetype = "dashed")) +
+  labs(x = "Years of follow up", y = "log TTV DNA copies per mL serum") +
+  scale_x_continuous(limits = c(0,35), breaks = c(0,5, 10, 15, 20, 25, 30, 35))+
+  geom_hline(yintercept=97, linetype='dashed', lwd=0.5)
+  ggsave("RCA_S1_lim.svg")
+
+
+
+ggplot(RCA_S2) +
+  geom_point(aes(x = Years, y = before_RCA), size = 3.5, col=c("turquoise")) +
+  geom_point(aes(x = Years, y = after_RCA), size = 4, col=c("turquoise4"), shape = 18) +
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 1000000000000)) +
+  theme(axis.title.x = element_text(size = 20), axis.title.y = element_text(size=20), axis.text.x = element_text(size=18), axis.text.y = element_text(size = 18), panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.minor = element_line(colour = "grey50", linetype = "dashed")) +
+  labs(x = "Years of follow up", y = "") +
+  scale_x_continuous(limits = c(0,35), breaks = c(0,5, 10, 15, 20, 25, 30, 35))+
+  geom_hline(yintercept=97, linetype='dashed', lwd=0.5)
+  ggsave("RCA_S2_lim.svg")
