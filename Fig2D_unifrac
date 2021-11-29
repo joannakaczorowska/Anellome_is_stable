@@ -1,0 +1,22 @@
+### Making the Unifrac figures
+
+### txt to biom
+http://biom-format.org/documentation/biom_conversion.html
+biom convert -i pres_abs_s34.txt -o otu_presabs_s34.biom --table-type="OTU table" --to-hdf5
+
+### Importing data - which means converting them to qza format
+https://docs.qiime2.org/2021.8/tutorials/importing/?highlight=otu%20table#feature-table-data
+
+qiime tools import --input-path pres_abs_s34.biom --type 'FeatureTable[PresenceAbsence]' --input-format BIOMV210Format --output-path pres_abs_s34.qza
+
+### Making a distance matrix
+## weighted
+qiime diversity-lib weighted-unifrac --i-table otu_s34.qza --i-phylogeny s3s3_tree.qza --o-distance-matrix dist_s34
+
+##unweighted
+## first I have to filter out the negative samples (samples that have no observation); otherwise it doesn't work
+
+qiime feature-table filter-samples --i-table presabs_s34.qza --p-min-frequency 1 --o-filtered-table pres_abs_s34_f.qza
+
+qiime diversity-lib unweighted-unifrac --i-table pres_abs_s34_f.qza --i-phylogeny s3s3_tree.qza --o-distance-matrix uw_dist_s34
+
