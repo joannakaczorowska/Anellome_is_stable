@@ -1,12 +1,10 @@
-###Script for Shannon index calculation
+###Script for general sequencing output
 library("vegan")
 library("tidyverse")
 library("dplyr")
 library("reshape2")
 library(ggpubr)
 library("svglite")
-
-setwd("C:/Users/jkacz/Documents/PhD/Anellome_paper/Reads_and_contigs_count_graph")
 
 count_S3S4 <- read_csv("count_S3_S4.csv")
 view(count_S3S4)
