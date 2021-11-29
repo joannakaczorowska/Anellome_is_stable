@@ -1,5 +1,5 @@
 # Anellome_is_stable
-The scripts available in this repository refer to the article <i> The human Anellome is stable over many years of host life </i>.
+The scripts available in this repository refer to the article <i> Diversity and long-term dynamics of human blood anelloviruses. </i>
 
 PART 1: Trimming and quality control of the reads. Filtering out the paired reads.
 
