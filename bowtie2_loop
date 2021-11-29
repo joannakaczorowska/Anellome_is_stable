@@ -1,0 +1,16 @@
+### This is the script loop to perform reads-to-contigs (lineages) alignments
+#!/bin/bash
+
+### Copy input data to scratch and create output directory
+cp -r $HOME/Illumina/bowtie/reads "$TMPDIR"
+
+##This is a script for Bowtie loop.
+for file1 in "$TMPDIR"/reads/*1P.fastq.gz
+do
+file2=${file1/1P/2P}
+out=${file1%%.fastq.gz}_output
+bowtie2 --very-sensitive -x "$TMPDIR"/reads/Subject -1 $file1 -2 $file2 -S $out
+done
+
+### Copy output data from scratch to home
+cp "$TMPDIR"/reads/*_output $HOME/Illumina/bowtie/output
