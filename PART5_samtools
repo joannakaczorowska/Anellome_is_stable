@@ -1,0 +1,28 @@
+#!/bin/bash
+
+### Copy input data to scratch and create output directory
+cp -r $HOME/Illumina/bowtie/output_S3 "$TMPDIR"
+
+### Sam to sorted bam
+for file1 in "$TMPDIR"/output_S3/*_output
+do
+out=${file1%%}.sorted.bam
+samtools view -bS $file1 | samtools sort - -o $out
+done
+
+### indexing and making table
+for file2 in "$TMPDIR"/output_S3/*.sorted.bam
+do
+output=${file2%%}.tab
+samtools index $file2 | samtools idxstats $file2 > $output
+done
+
+### stdout - making the table with statistics
+for file3 in "$TMPDIR"/output_S3/*.sorted.bam
+do
+outtab=${file3%%}.stdout
+~/Illumina/bowtie/bbmap/pileup.sh in=$file3 out=$outtab
+done
+
+### Copy output data from scratch to home
+cp -r "$TMPDIR"/output_S3 $HOME/Illumina/bowtie/samtools_results
