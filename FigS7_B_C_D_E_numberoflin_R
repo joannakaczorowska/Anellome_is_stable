@@ -1,0 +1,100 @@
+library("vegan")
+library("tidyverse")
+library("dplyr")
+library("reshape2")
+library(ggpubr)
+library("svglite")
+require(scales)
+
+linTP <- read.csv("lin_TP.csv")
+
+ggplot(linTP, aes(x = Subject, y = no_lin)) +
+  geom_boxplot(aes(fill = Subject)) +
+  labs(x = "", y = "Number of lineages per time point") +
+  theme(panel.background = element_rect(fill="white", colour = "grey50"), panel.grid.major = element_line(colour = "grey50", linetype = "dashed")) +
+  theme(aspect.ratio = 4/3) +
+  stat_compare_means()
+ggsave("no_lin_TP.svg")
+
+
+### Correlation between no of lineages and genera qPCR results
+
+linTPconc <- read.csv("lin_TP_conc.csv")
+
+ggplot(linTPconc, aes(y = TTVconc, x = no_lin)) +
+  geom_point(aes(colour = factor(Subject))) +
+  geom_smooth(method = "lm") +
+  theme_minimal() +
+  labs(y = "TTV copies per mL", x = "Number of AV lineages per time point")+
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  theme(axis.text.y = element_text(hjust = 0, size = 15), axis.text.x = element_text(size = 15), axis.title.y = element_text(size = 20), axis.title.x = element_text(size = 20))
+ggsave("TTVconc_nolin.svg")
+
+cor.test(linTPconc$no_lin, linTPconc$TTVconc, method = "spearman")
+###Spearman's rank correlation rho
+
+#data:  linTPconc$no_lin and linTPconc$TTVconc
+#S = 46968, p-value < 2.2e-16
+#alternative hypothesis: true rho is not equal to 0
+#sample estimates:
+  #rho 
+#0.7699415 
+
+ggplot(linTPconc, aes(y = TTMVconc, x = no_lin)) +
+  geom_point(aes(colour = factor(Subject))) +
+  geom_smooth(method = "lm") +
+  theme_minimal() +
+  labs(y = "TTMV copies per mL", x = "Number of AV lineages per time point")+
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  theme(axis.text.y = element_text(hjust = 0, size = 15), axis.text.x = element_text(size = 15), axis.title.y = element_text(size = 20), axis.title.x = element_text(size = 20))
+ggsave("TTMVconc_nolin.svg")
+
+
+## These graphs per subject
+### Subject 1
+linTPconc_S1 <- read.csv("lin_TP_conc_S1.csv")
+ggplot(linTPconc_S1, aes(y = TTVconc, x = no_lin)) +
+  geom_point(aes(colour = factor(Subject))) +
+  geom_smooth(method = "lm") +
+  theme_minimal() +
+  labs(y = "TTV copies per mL", x = "Number of AV lineages per time point")+
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(10000, 10000000)) +
+  theme(axis.text.y = element_text(hjust = 0, size = 15), axis.text.x = element_text(size = 15), axis.title.y = element_text(size = 20), axis.title.x = element_text(size = 20))
+ggsave("TTVconc_nolin_S1.svg")
+
+cor.test(linTPconc_S1$no_lin, linTPconc_S1$TTVconc, method = "spearman")
+###Spearman's rank correlation rho
+
+#data:  linTPconc_S1$no_lin and linTPconc_S1$TTVconc
+#S = 13093, p-value = 3.478e-05
+#alternative hypothesis: true rho is not equal to 0
+#sample estimates:
+#    rho 
+#0.5276561
+
+### Subject 2
+linTPconc_S2 <- read.csv("lin_TP_conc_S2.csv")
+ggplot(linTPconc_S2, aes(y = TTVconc, x = no_lin)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_minimal() +
+  labs(y = "TTV copies per mL", x = "Number of AV lineages per time point")+
+  scale_y_log10(breaks=trans_breaks('log10', function(x) 10^x),
+                labels=trans_format('log10', math_format(10^.x)), limits = c(1, 10000000)) +
+  theme(axis.text.y = element_text(hjust = 0, size = 15), axis.text.x = element_text(size = 15), axis.title.y = element_text(size = 20), axis.title.x = element_text(size = 20))
+ggsave("TTVconc_nolin_S2.svg")
+
+cor.test(linTPconc_S2$no_lin, linTPconc_S2$TTVconc, method = "spearman")
+
+ 
+
+###Spearman's rank correlation rho
+#data:  linTPconc_S2$no_lin and linTPconc_S2$TTVconc
+#S = 7504.2, p-value = 3.016e-08
+#alternative hypothesis: true rho is not equal to 0
+#sample estimates:
+  #rho 
+#0.6796632
