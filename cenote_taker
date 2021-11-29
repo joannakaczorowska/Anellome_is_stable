@@ -1,0 +1,2 @@
+##CENOTE TAKER SCRIPT
+python run_cenote-taker2.0.1.py --contigs T1_contigs.fasta --run_title Subject3_T1_ --template_file Anellome.sbt --prune_prophage False --mem 32 --cpu 32 --filter_out_plasmids True --enforce_start_codon False --handle_contigs_without_hallmark sketch_all 
