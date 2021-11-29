@@ -1,0 +1,19 @@
+#!/bin/bash
+
+### Load modules
+module load python
+
+### Copy input data to scratch and create output directory
+cp -r $HOME/Illumina/Input_Spades "$TMPDIR"
+mkdir "$TMPDIR"/Output_Spades
+
+### Run SPAdes
+for file1 in "$TMPDIR"/Input_Spades/*1P.fasta
+do
+file2=${file1/1P/2P}
+out="$TMPDIR"/Output_Spades/${file1%%.fasta}_output
+python ~/Illumina/SPAdes-3.14.1/spades.py --careful --only-assembler -1 $file1 -2 $file2 -o $out
+done
+
+### Copy output data from scratch to home
+cp -r "$TMPDIR"/Output_Spades $HOME/Illumina
