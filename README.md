@@ -11,7 +11,7 @@ PART 4: Cenote-Taker 2 virus discovery pipeline.
 
 PART 5: Alignment of paired reads; generation of reads-to-genomes tables; assessment of the read coverage.
 
-PART 6: Data presentation.
+PART 6: Data presentation (Figures and tables).
 
 PART 7: Statistical analysis.
 
